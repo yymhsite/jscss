@@ -1,0 +1,512 @@
+<extend name="Public:yymh"/>
+<block name="title"><?php echo C('SITE_NAME');?>-搜索</block>
+<block name="head">
+    <script type="text/javascript" src="__JS__/jquery.cookie.js"></script>
+</block>
+<block name="body">
+<div class="view view-main">
+    <div class="page page-current no-toolbar no-swipeback" data-name="readerSearch">
+        <div class="navbar">
+            <div class="navbar-inner sliding">
+                <form class="searchbar searchbar-enabled">
+                    <div class="searchbar-inner">
+                        <div class="searchbar-input-wrap">
+                            <input placeholder="书名/作者" id="searchbar" type="search" class="input-with-value">
+                            <i class="searchbar-icon"></i>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        <span class="searchbar-disable-button" onclick="history.go(-1);">Cancel</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="page-content page-content-old">
+            <!-- <div class="reader-search-list-view list no-hairlines">
+                <ul>
+                    <li class="accordion-item"><a class="item-link" href="#">
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <div class="item-title">搜索历史</div>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="list">
+                            <ul>
+                                <li class="reader-search-history-list-item">
+                                    <div class="item-content">
+                                        <div class="item-inner">
+                                            <div><i class="margin-right-sm icon material-icons color-gray">access_time</i> 偷窥</div>
+                                            <div><a class="button button-small" href="#"><i class="close-icon icon material-icons color-gray">clear</i></a></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                
+                                <li class="no-padding height-0 item-divider"><span></span></li>
+                            </ul>
+                        </div>
+                        <div class="accordion-item-content">
+                            <div class="list">
+                                <ul>
+                                    <li><a class="item-link list-button" data-tab="false">清空搜索记录</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div> -->
+            <div class="no-margin list no-hairlines">
+                <ul>
+                    <li class="normal-divider-line item-divider"><span></span></li>
+                </ul>
+            </div>
+            <div id="jphc" class="reader-zone-list-view list no-hairlines">
+                <ul>
+                    <li class="">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">大家都在看</div>
+                                <div class="item-after"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="reader-zone-list-view-books">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="display-flex justify-content-space-between width-100"  id="jphc1">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="item-content">
+                            <div class="item-inner"><a class="replace-btn width-100 button button-round button-fill button-small" href="javascript:void(0)" onclick="changejphc();"><span>换一换</span></a></div>
+                        </div>
+                    </li>
+                    <li class="normal-divider-line item-divider"><span></span></li>
+                </ul>
+            </div>
+            <div  class="reader-zone-list-view list no-hairlines">
+                <ul>
+                    <li class="">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title">猜你喜欢</div>
+                                <div class="item-after"></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul id="cnxh">
+                </ul>
+                <ul>   
+                    <li class="">
+                        <div class="item-content">
+                            <div class="item-inner"><a class="replace-btn width-100 button button-round button-fill button-small" href="javascript:void(0)" onclick="changecnxh();"><span>换一换</span></a></div>
+                        </div>
+                    </li>
+                    <li class="normal-divider-line item-divider"><span></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="booklist">
+ {{each data  value i}}
+ <a class="reader-book reader-book-default" href="/home/book/index/id/{{value['id']}}">
+    <div class="">
+        <div class="cover">
+            <img src="{{value['image']}}" alt="">
+            {{if value['mhstatus']==0}}
+                <span class="status" data-status="serialized">连载</span>
+            {{/if}}
+            {{if value['mhstatus']==1}}
+                <span class="status" data-status="finish">完结</span>
+            {{/if}}
+            {{if value['tjswitch']==1}}
+                <span class="type" data-type="recommend"></span>
+            {{/if}}
+
+            {{if value['isjingpin']==1}}
+                <span class="type" data-type="competitive"></span>
+            {{/if}}
+
+            {{if value['xianmian']==1}}
+                <span class="type" data-type="free_in_limit_time"></span>
+            {{/if}}
+        </div>
+        <span class="name">{{value['title']}}</span>
+        <div class="footer">
+            <span class="score"><i class="icon material-icons">star</i> {{value['mark']}}</span>
+            <span class="readCount"><i class="icon material-icons">remove_red_eye</i> {{value['view']}}</span>
+        </div>
+    </div>
+</a>
+ {{/each}}
+</script>
+
+<script type="text/html" id="booklist2">
+ {{each data  value i}}
+<li class="reader-zone-list-view-books">
+  <div class="item-content">
+      <div class="item-inner">
+          <div class="display-flex justify-content-space-between width-100">
+              <a class="reader-book reader-book-default reader-book-round reader-book-media" href="/home/book/index/id/{{value['id']}}">
+                  <div class="">
+                      <div class="cover">
+                          <img src="{{value['image']}}"/>
+                          {{if value['mhstatus']==0}}
+                              <span class="status" data-status="serialized">连载</span>
+                          {{/if}}
+                          {{if value['mhstatus']==1}}
+                              <span class="status" data-status="finish">完结</span>
+                          {{/if}}
+
+                          {{if value['tjswitch']==1}}
+                              <span class="type" data-type="recommend"></span>
+                          {{/if}}
+
+                          {{if value['isjingpin']==1}}
+                              <span class="type" data-type="competitive"></span>
+                          {{/if}}
+                          {{if value['xianmian']==1}}
+                              <span class="type" data-type="free_in_limit_time"></span>
+                          {{/if}}
+                      </div>
+                      <span class="name">{{value['title']}}</span>
+                      <p class="desc">{{value['desc']}}</p>
+                      <div class="footer">
+                          <span class="score"><i class="icon material-icons">star</i> {{value['mark']}}</span>
+                          <span class="readCount"><i class="icon material-icons">remove_red_eye</i> {{value['view']}}</span>
+                          <span class="author">作者：{{value['auther']}}</span>
+                      </div>
+                  </div>
+              </a>
+          </div>
+      </div>
+  </div>
+</li>
+ {{/each}}
+</script>
+</block>
+
+<block name="bodyext">
+
+<script type="text/html" id="one_list_item">
+<div class="page-content">
+    <div class="searchbar-found list">
+        <ul>
+            {{each list value i}}
+            <li class="reader-zone-list-view-books">
+              <div class="item-content">
+                  <div class="item-inner">
+                      <div class="display-flex justify-content-space-between width-100">
+                          <a class="reader-book reader-book-default reader-book-round reader-book-media" href="/home/book/index/id/{{value['id']}}">
+                              <div class="">
+                                  <div class="cover">
+                                      <img src="{{value['image']}}"/>
+                                      {{if value['mhstatus']==0}}
+                                          <span class="status" data-status="serialized">连载</span>
+                                      {{/if}}
+                                      {{if value['mhstatus']==1}}
+                                          <span class="status" data-status="finish">完结</span>
+                                      {{/if}}
+
+                                      {{if value['tjswitch']==1}}
+                                          <span class="type" data-type="recommend"></span>
+                                      {{/if}}
+
+                                      {{if value['isjingpin']==1}}
+                                          <span class="type" data-type="competitive"></span>
+                                      {{/if}}
+                                      {{if value['xianmian']==1}}
+                                          <span class="type" data-type="free_in_limit_time"></span>
+                                      {{/if}}
+                                  </div>
+                                  <span class="name">{{value['title']}}</span>
+                                  <p class="desc">{{value['desc']}}</p>
+                                  <div class="footer">
+                                      <span class="score"><i class="icon material-icons">star</i> {{value['mark']}}</span>
+                                      <span class="readCount"><i class="icon material-icons">remove_red_eye</i> {{value['view']}}</span>
+                                      <span class="author">作者：{{value['auther']}}</span>
+                                  </div>
+                              </div>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+            </li>
+            {{/each}}
+            
+        </ul>
+    </div>
+</div>
+</script>
+
+<script type="text/html" id="one_list_item2">
+<div class="page-content">
+    <div class="searchbar-found list">
+        <div class="text-align-center width-100 block" style="margin-top: 30vh;"><i class="icon material-icons color-gray" style="font-size: 5em;">storage</i>
+            <p class="text-color-gray text-align-center">查询不到书籍~</p>
+        </div>
+    </div>
+</div>
+</script>
+
+<script type="text/javascript">
+    window.page = 1;
+    window.loading = false;
+    window.t={$t};
+    var searchBar = document.querySelector(".searchbar");
+    var searchBarInput = document.querySelector(".searchbar input");
+    var searchBarBtn = document.querySelector(".aui-searchbar .aui-searchbar-btn");
+    var searchBarClearBtn = document.querySelector(".searchbar .input-clear-button");
+
+    //初始化搜索条
+    function initSearchBar(callback) {
+        if (searchBar) {
+            searchBarInput.onfocus = function() {
+                $(this).addClass('input-focused');
+            }
+            // searchBarInput.oninput = function() {
+            //     if (this.value.length) {
+            //         searchBarClearBtn.style.display = 'block';
+            //         searchBarBtn.classList.add("aui-text-info");
+            //         searchBarBtn.textContent = "搜索";
+            //     } else {
+            //         searchBarClearBtn.style.display = 'none';
+            //         searchBarBtn.classList.remove("aui-text-info");
+            //         searchBarBtn.textContent = "取消";
+            //     }
+            // }
+        }
+        searchBarClearBtn.onclick = function() {
+            this.style.display = 'none';
+            searchBarInput.value = '';
+            searchBarBtn.classList.remove("aui-text-info");
+            searchBarBtn.textContent = "取消";
+        }
+        // searchBarInput.onblur = function() {
+        //     var keywords = $('#searchbar').val();
+        //     // alert(keywords);
+        //     if (keywords.length) {
+        //         searchBarInput.blur();
+        //         callback(keywords);
+        //     } else {
+        //         this.style.marginRight = "-" + this.offsetWidth + "px";
+        //         searchBarInput.value = '';
+        //         searchBarInput.blur();
+        //     }
+        // }
+        searchBarInput.onkeypress = function(e) {
+          var keycode = e.keyCode;
+          if(keycode!='13') {
+              return false;
+          }
+            var keywords = $('#searchbar').val();
+            // alert(keywords);
+            if (keywords.length) {
+                searchBarInput.blur();
+                callback(keywords);
+            } else {
+                this.style.marginRight = "-" + this.offsetWidth + "px";
+                searchBarInput.value = '';
+                searchBarInput.blur();
+            }
+            return false;
+        }
+        searchBarBtn.onclick = function() {
+            var keywords = searchBarInput.value;
+            if (keywords.length) {
+                searchBarInput.blur();
+                callback(keywords);
+            } else {
+                this.style.marginRight = "-" + this.offsetWidth + "px";
+                searchBarInput.value = '';
+                searchBarInput.blur();
+            }
+        }
+    }
+
+    //
+    function changejphc(){
+        $.ajax({
+            url: "{:U('Api/getJphc')}",
+            type: 'post',
+            data:{
+                limit:4,
+                fz:1,
+                type:1            },
+          success: function (data) {
+              if (data.code === 200) {
+                  var top=template('booklist',data);
+                  document.getElementById("jphc1").innerHTML = top;
+              }
+            }
+          });
+          
+      }
+    //
+    function changecnxh(){
+        $.ajax({
+            url: "{:U('Api/getCnxh')}",
+            type: 'post',
+            data:{
+                limit:5,
+                type:1            },
+          success: function (data) {
+              if (data.code === 200) {
+                  var top=template('booklist2',data);
+                  document.getElementById("cnxh").innerHTML = top;
+              }
+            }
+          });
+      }
+    //搜索条写入
+    function searchBarWrite(text) {
+        searchBarBtn.style.marginRight = 0;
+        searchBarClearBtn.style.display = 'block';
+        searchBarBtn.classList.add("aui-text-info");
+        searchBarBtn.textContent = "搜索";
+        searchBarInput.value = text;
+    }
+    //获取分类
+    function getSearch() {
+        var keywords = $('#searchbar').val();
+        if (keywords == '') {
+            appCenter.showFailToast("请输入关键词");
+            return;
+        }
+        $('.pager-panel').text('正在加载中...');
+        appCenter.showLoadingToast('正在加载中...');
+        appCenter.doSearch(keywords,window.t, window.page, function(data) {
+            var html = template("one_list_item", data);
+            var html2 = template("one_list_item2", data);
+            //是否添加
+            $('.page-content-old').remove();
+            if(data.code==0){
+                $('.pager-panel').attr('lastpage', 'true');
+                $('.pager-panel').text('暂无记录');
+                $('.navbar').after(html2);
+            }else{
+                if (window.page <= 1) {
+                    $('.navbar').after(html);
+                } else {
+                    $('.page-content').after(html);
+                }
+            }
+            
+            //是否到底
+            if (data.lastPage) {
+                $('.pager-panel').attr('lastpage', 'true');
+                $('.pager-panel').text('数据到底');
+            } else {
+                $('.pager-panel').attr('lastpage', 'false');
+                $('.pager-panel').text('点击加载更多');
+            }
+            
+            window.toast.hide();
+            $("img.lazy").lazyload();
+        });
+    }
+
+    function getSearchKey() {
+        var keywords = $('#searchbar').val();
+        if (keywords == '') {
+            appCenter.showFailToast("请输入关键词");
+            return;
+        }
+        $('.pager-panel').text('正在加载中...');
+        appCenter.showLoadingToast('正在加载中...');
+        appCenter.doSearchKey(keywords,window.t, window.page, function(data) {
+            var html = template("one_list_item", data);
+            //是否添加
+            if (window.page <= 1) {
+                $('.aui-media-list').html(html);
+            } else {
+                $('.aui-media-list').append(html);
+            }
+            //是否到底
+            if (data.lastPage) {
+                $('.pager-panel').attr('lastpage', 'true');
+                $('.pager-panel').text('数据到底');
+            } else {
+                $('.pager-panel').attr('lastpage', 'false');
+                $('.pager-panel').text('点击加载更多');
+            }
+            if(data.code==0){
+                $('.pager-panel').attr('lastpage', 'true');
+                $('.pager-panel').text('暂无记录');
+            }
+            window.toast.hide();
+            $("img.lazy").lazyload();
+        });
+    }
+    //加载更多
+    function loadMore() {
+        if ($('.pager-panel').attr('lastpage') == 'false') {
+            window.page++;
+            getSearch() ;
+        }
+    }
+
+    
+    //初始化
+    $(function() {
+        changejphc();
+        changecnxh();
+        initSearchBar(function(keywords) {
+            getSearch();
+        });
+        var keyword = "{$_GET['k']}";
+        if (keyword != '') {
+            searchBarWrite(keyword);
+            getSearch();
+        }
+        var key = "{$_GET['key']}";
+        if (key != '') {
+            searchBarWrite(key);
+            getSearchKey();
+        }
+    });
+</script>
+</block>
+
+    <section>
+        <header class="aui-bar aui-bar-nav aui-bar-light aui-bar-nav-fixed">
+            <a class="aui-pull-left aui-btn " href="javascript:history.go(-1);">
+                <span class="aui-iconfont aui-icon-left aui-btn-back"></span>
+            </a>
+            <div class="aui-title">
+                <div class="aui-bar aui-bar-btn aui-bar-btn-round" data-index="{$t}">
+                        <div class="aui-bar-btn-item " data-url="?t=comic" tapmode="" data-item-order="1">搜漫画</div>
+                        <div class="aui-bar-btn-item " data-url="?t=novel" tapmode="" data-item-order="2">搜小说</div>
+                </div>
+            </div>
+            <a class="aui-pull-right aui-btn " href="/">
+                <span class="aui-iconfont aui-icon-home aui-btn-back"></span>
+            </a>
+        </header>
+    </section>
+    <section class="fixed-content">
+            <!-- 搜索狂 -->
+            <div class="aui-searchbar" id="search">
+                <div class="aui-searchbar-input aui-border-radius">
+                    <i class="aui-iconfont aui-icon-search"></i> <input type="search" placeholder="请输入搜索内容" id="search-input">
+                    <div class="aui-searchbar-clear-btn" style="display: block;">
+                        <i class="aui-iconfont aui-icon-close"></i>
+                    </div>
+                </div>
+                <div class="aui-searchbar-btn aui-text-info" tapmode="" style="margin-right: 0px;">搜索</div>
+            </div>
+            <!--1图列表-->
+            <section class="base-panel">
+                <!--列表内容-->
+                <ul class="aui-list aui-media-list">
+
+                </ul>
+                <div class="pager-panel" lastpage="true" onclick="loadMore()">数据到底</div>
+            </section>
+            <!--列表-->
+        </section>
